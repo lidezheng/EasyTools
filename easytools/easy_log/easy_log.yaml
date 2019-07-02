@@ -1,0 +1,57 @@
+version: 1
+disable_existing_loggers: False
+formatters:
+    simple:
+        format: "%(asctime)s - %(name)s \t- %(levelname)s \t- %(message)s"
+        datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+    # 输出到控制台的 Handler
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+
+    # 基于时间轮转的 Handler
+    handler_rotate_by_time:
+        class: logging.handlers.TimedRotatingFileHandler
+        level: DEBUG
+        formatter: simple
+        filename: /data/log/rotate_by_time.log  # 若目录不存在，需要手动创建
+        interval: 5   # 间隔
+        when: s       # 秒数，具体请参考python logging文档
+        backupCount: 2  # 保留的日志文件最大数量
+        encoding: utf8
+
+    # 基于日志文件大小的 Handler
+    error_file_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: simple
+        filename: errors.log  # 文件名
+        maxBytes: 10485760 # 字节为单位, 10MB=1024*1024*10
+        backupCount: 20
+        encoding: utf8
+
+    # 将日志消息发到邮箱
+    email:
+        class: logging.handlers.SMTPHandler
+        level: CRITICAL
+        mailhost: [localhost, 25]   # 主机名，端口号
+        fromaddr: Program <my_app@domain.com>
+        toaddrs:
+          - xxxx@xx.com
+          - xx@qq.com
+        subject: Warning!  we have a problem.
+
+loggers:
+    my_module:
+        level: ERROR
+        handlers: [console, handler_rotate_by_time]
+        # handlers: [console, email]
+        propagate: no
+
+root:
+    level: INFO
+    handlers: [console]
