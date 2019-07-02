@@ -1,8 +1,6 @@
 # EasyTools：简单封装，简单使用
 封装的工具集合
 
-安装： pip install easytools
-
 ## 1. EasyLog是对Python logging模块的简单封装，保留了logging模块最基本的功能
 导入：from easytools.easy_log import EasyLog
 
